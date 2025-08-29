@@ -11,7 +11,6 @@ import { AccountService } from '../../../core/services/account-service';
 })
 export class Register {
 accountService = inject(AccountService);
-membersFromHome=input.required<User[]>();
 cancelRegister = output<boolean>();
 protected creds = {} as RegisterCreds;
 
