@@ -5,9 +5,11 @@ import { MemberDetailed } from '../features/members/member-detailed/member-detai
 import { Lists } from '../features/lists/lists';
 import { Messages } from '../features/messages/messages';
 import { authGuard, authGuard2 } from '../core/guards/auth-guard';
+import { TestErrors } from '../features/test-errors/test-errors';
 
 export const routes: Routes = [
   { path: '', component: Home },
+  { path: 'errors', component: TestErrors },
   {
     path: '',
     runGuardsAndResolvers: 'always',
