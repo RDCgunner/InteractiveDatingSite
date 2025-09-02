@@ -1,9 +1,11 @@
 using System.Text;
 using API.Data;
+using API.Entities;
 using API.Interfaces;
 using API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,7 +18,8 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
     opt.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
-builder.Services.AddScoped<ITokenService,TokenService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IMemberRepository,MemberRepository>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -45,5 +48,23 @@ app.UseAuthentication(); //who
 app.UseAuthorization(); //R U Authorized ==needs to be after authentication
 
 app.MapControllers();
+
+//Seed data
+using var scope = app.Services.CreateScope();
+var services = scope.ServiceProvider;
+try
+{
+    var context = services.GetRequiredService<AppDbContext>();
+    await context.Database.MigrateAsync();
+    await Seed.SeedUsers(context);
+}
+catch (Exception Ex)
+{
+    var logger = services.GetRequiredService<ILogger<Program>>();
+    logger.LogError(Ex, "An error has occured during migration");
+    throw;
+}
+
+
 
 app.Run();
