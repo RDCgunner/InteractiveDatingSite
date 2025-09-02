@@ -19,6 +19,9 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
               if(error.error.errors[key]){
                 modelStateError.push(error.error.errors[key])
               }
+              else  {
+                toast.error(error.error+ ' '+error.status )
+              }
             }
             throw modelStateError.flat();
             break;
@@ -27,9 +30,11 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
             break;
           case 404:
             toast.error('Not found');
+            router.navigateByUrl('/not-found')
             break;
           case 500:
             toast.error('Server Error');
+            router.navigateByUrl('/server-error')
             break;
 
           default:
