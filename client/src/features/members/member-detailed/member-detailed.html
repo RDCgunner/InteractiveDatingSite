@@ -1,4 +1,4 @@
-@if(member$ | async; as member){
+@if(member!(); as member){
 <div class="flex gap-6">
   <div class="card bg-base-100 flex flex-col h-[85vh] w-1/4">
     <img
@@ -8,7 +8,7 @@
     />
     <div class="card-body">
       <div class="flex flex-col items-center-safe">
-        <div class="flex text-2xl text-primary">{{ member.displayName }}, 25</div>
+        <div class="flex text-2xl text-primary">{{ member.displayName }}, {{member.dateOfBirth | age}}</div>
         <div class="text-sm">{{ member.city }}, {{ member.country }}</div>
       </div>
     </div>

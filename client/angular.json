@@ -17,9 +17,18 @@
         "@schematics/angular:guard": {
           "skipTests" :true,
           "path": "src/core/guards"
-        },"@schematics/angular:interceptor": {
+        },
+        "@schematics/angular:interceptor": {
           "skipTests" :true,
           "path": "src/core/interceptor"
+        },
+        "@schematics/angular:resolver": {
+          "skipTests" :true,
+          "path": "src"
+        },
+        "@schematics/angular:pipe": {
+          "skipTests" :true,
+          "path": "src/core/pipes"
         }
 
       },

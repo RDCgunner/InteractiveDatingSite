@@ -11,6 +11,7 @@ import { ServerError } from '../shared/errors/server-error/server-error';
 import { MemberProfile } from '../features/members/member-profile/member-profile';
 import { MemberMessages } from '../features/members/member-messages/member-messages';
 import { MemberPhotos } from '../features/members/member-photos/member-photos';
+import { memberResolver } from '../features/members/member-resolver';
 
 export const routes: Routes = [
   { path: 'errors', component: TestErrors },
@@ -21,8 +22,10 @@ export const routes: Routes = [
     canActivate: [authGuard],
     children: [
       { path: 'home', component: Home},
-      { path: 'members', component: MemberList},
+      { path: 'members', component: MemberList, pathMatch:'full'},
       { path: 'members/:id', 
+          resolve:{memberF: memberResolver},
+          runGuardsAndResolvers:'always',
           component: MemberDetailed,
           children:[
             {path: '', redirectTo:'profile', pathMatch:'full'},

@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
-import { Member } from '../../types/member';
+import { Member, Photo } from '../../types/member';
 import { AccountService } from './account-service';
 import { Token } from '@angular/compiler';
 
@@ -22,6 +22,14 @@ export class MemberService {
     return this.httpClient.get<Member>(this.baseUrl+'members/'+id);
   }
   
+
+  getMemberPhotos(id: string){
+    return this.httpClient.get<Photo[]>(this.baseUrl+'members/' + id+ '/photos')
+  }
+
+
+
+//deprecated
 private getHttpOptions(){
   return {
     headers: new HttpHeaders({
