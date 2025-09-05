@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { Member, Photo } from '../../types/member';
 import { AccountService } from './account-service';
@@ -13,7 +13,8 @@ export class MemberService {
   private accontService = inject(AccountService)
   private baseUrl = environment.apiUrl;
   localStorage: any;
-
+  public editMode=signal(false);
+  
   getMembers(){
     return this.httpClient.get<Member[]>(this.baseUrl+'members');
   }

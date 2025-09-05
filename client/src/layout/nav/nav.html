@@ -64,9 +64,9 @@
         </div>
         <ul
           tabindex="0"
-          class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
+          class="dropdown-content menu bg-base-100 rounded-box z-50 w-52 p-2 shadow-sm"
         >
-          <li><a>Edit Profile</a></li>
+          <li><a routerLink="/members/{{user.id}}">Edit Profile</a></li>
           <li (click)="logout()">
             <a>Logout</a>
           </li>

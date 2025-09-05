@@ -13,10 +13,4 @@ export const authGuard: CanActivateFn = () => {
   return true;
 };
 
-export const authGuard2: CanActivateFn = () => {
- const accountService = inject(AccountService);
- const toast = inject(ToastService);
 
-return false
-  
-};

@@ -4,6 +4,7 @@ import { ActivatedRoute, NavigationEnd, Router, RouterLink, RouterLinkActive, Ro
 import { Member } from '../../../types/member';
 import { filter, first, firstValueFrom, Observable, single } from 'rxjs';
 import { AgePipe } from '../../../core/pipes/age-pipe';
+import { AccountService } from '../../../core/services/account-service';
 
 @Component({
   selector: 'app-member-detailed',
@@ -14,11 +15,17 @@ import { AgePipe } from '../../../core/pipes/age-pipe';
 export class MemberDetailed implements OnInit{
  
 
-  private memberService = inject(MemberService);
+  protected memberService = inject(MemberService);
   private route = inject(ActivatedRoute);
- private router=inject(Router);
+  private accountService = inject(AccountService);
+  private router=inject(Router);
+
+
   protected member?=signal<Member | undefined> (undefined);
   protected title = signal<string | undefined>('Profile');
+  protected isCurrentUser = (()=>{
+    return this.accountService.currentUser()?.id === this.route.snapshot.paramMap.get('id')
+  })
 
  ngOnInit()  {
 
