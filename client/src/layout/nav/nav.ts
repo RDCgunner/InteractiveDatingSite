@@ -4,6 +4,8 @@ import { AccountService } from '../../core/services/account-service';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { ToastService } from '../../core/services/toast-service';
 import { themes } from '../themes';
+import { MemberService } from '../../core/services/member-service';
+import { BusyService } from '../../core/services/busy-service';
 
 @Component({
   selector: 'app-nav',
@@ -15,7 +17,9 @@ export class Nav implements OnInit{
   
 
 protected accountService = inject(AccountService);
-protected toastService = inject(ToastService)
+protected toastService = inject(ToastService);
+protected memberService = inject(MemberService);
+protected busyService = inject(BusyService);
 
 protected router = inject(Router);
 protected creds : any = {};

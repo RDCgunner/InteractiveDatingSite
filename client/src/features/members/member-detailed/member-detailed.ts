@@ -21,7 +21,7 @@ export class MemberDetailed implements OnInit{
   private router=inject(Router);
 
 
-  protected member?=signal<Member | undefined> (undefined);
+ 
   protected title = signal<string | undefined>('Profile');
   protected isCurrentUser = (()=>{
     return this.accountService.currentUser()?.id === this.route.snapshot.paramMap.get('id')
@@ -29,11 +29,12 @@ export class MemberDetailed implements OnInit{
 
  ngOnInit()  {
 
-    this.route.data.subscribe(
-      {
-        next: data => {this.member?.set(data['memberF'])}
-      }
-    )
+    // this.route.data.subscribe(
+    //   {
+    //     next: data => {this.member?.set(data['memberF'])}
+    //   }
+    // )
+
 
      this.title.set(this.route.firstChild?.snapshot?.title);
 

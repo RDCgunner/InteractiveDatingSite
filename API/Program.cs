@@ -1,9 +1,11 @@
+using System.Security.Claims;
 using System.Text;
 using API.Data;
 using API.Entities;
 using API.Interfaces;
 using API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using Microsoft.IdentityModel.Tokens;
@@ -19,7 +21,9 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
 });
 
 builder.Services.AddScoped<ITokenService, TokenService>();
-builder.Services.AddScoped<IMemberRepository,MemberRepository>();
+builder.Services.AddScoped<IMemberRepository, MemberRepository>();
+
+//extracts from request the jwt token inside header and validates it
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {

@@ -19,17 +19,17 @@ public class TokenService(IConfiguration config):ITokenService
         var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha512);
 
 
-        /*var claims = new List<Claim> //
+        var claims = new List<Claim> //
         {
             new(ClaimTypes.Email, appuser.Email),
             new(ClaimTypes.NameIdentifier, appuser.Id)
             //new("InformationAdded","ValueofThatclaim")
         };
-        */
+        
       
         var tokenDescriptor = new SecurityTokenDescriptor
         {
-            //Subject = new ClaimsIdentity(claims),
+            Subject = new ClaimsIdentity(claims),
             Expires = DateTime.UtcNow.AddDays(7),
             SigningCredentials = cred
         };

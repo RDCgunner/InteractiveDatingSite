@@ -1,9 +1,10 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { environment } from '../../environments/environment';
-import { Member, Photo } from '../../types/member';
+import { EditableMember, Member, Photo } from '../../types/member';
 import { AccountService } from './account-service';
 import { Token } from '@angular/compiler';
+import { tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -14,13 +15,19 @@ export class MemberService {
   private baseUrl = environment.apiUrl;
   localStorage: any;
   public editMode=signal(false);
+  public memberProfile = signal<Member | null>(null);
   
   getMembers(){
     return this.httpClient.get<Member[]>(this.baseUrl+'members');
   }
   
   getMember(id: string){
-    return this.httpClient.get<Member>(this.baseUrl+'members/'+id);
+    return this.httpClient.get<Member>(this.baseUrl+'members/'+id).pipe(
+      tap( member=>{
+        this.memberProfile.set(member)
+      })
+    )
+
   }
   
 
@@ -29,6 +36,9 @@ export class MemberService {
   }
 
 
+  updateMember(member:EditableMember){
+    return this.httpClient.put(this.baseUrl+'members',member);
+  }
 
 //deprecated
 private getHttpOptions(){
