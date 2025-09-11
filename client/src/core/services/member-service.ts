@@ -29,15 +29,27 @@ export class MemberService {
     )
 
   }
-  
 
   getMemberPhotos(id: string){
     return this.httpClient.get<Photo[]>(this.baseUrl+'members/' + id+ '/photos')
   }
 
-
   updateMember(member:EditableMember){
     return this.httpClient.put(this.baseUrl+'members',member);
+  }
+
+  uploadPhoto(file: File){
+    const formData = new FormData();
+    formData.append('file',file);
+    return this.httpClient.post<Photo>(this.baseUrl+'members/add-photo',formData)
+  }
+
+  setMainPhoto (photo: Photo){
+    return this.httpClient.put(this.baseUrl+'members/set-main-photo/'+photo.id, {})
+  }
+
+  deletePhoto (photo: Photo){
+    return this.httpClient.delete(this.baseUrl+'members/delete-photo/'+photo.id)
   }
 
 //deprecated

@@ -1,0 +1,60 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:142.0) Gecko/20100101 Firefox/142.0" version="28.2.0">
+  <diagram name="Page-1" id="A5Iyh2Iqb1EfDsmunW1a">
+    <mxGraphModel dx="2066" dy="787" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="PfpxP-m1vplkD573G0CM-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="PfpxP-m1vplkD573G0CM-1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="260" y="250" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="PfpxP-m1vplkD573G0CM-1" value="&lt;div&gt;LOGIN/&lt;/div&gt;&lt;div&gt;user/pass&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="220" width="60" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="PfpxP-m1vplkD573G0CM-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="PfpxP-m1vplkD573G0CM-5">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="240" y="45" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="PfpxP-m1vplkD573G0CM-5" value="Register" style="whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+          <mxGeometry x="20" y="10" width="70" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="PfpxP-m1vplkD573G0CM-8" value="&lt;div&gt;Retrieves User from Db&amp;nbsp;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Returns Extended User Object with Token attached&lt;/div&gt;" style="whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+          <mxGeometry x="440" y="210" width="160" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="PfpxP-m1vplkD573G0CM-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="PfpxP-m1vplkD573G0CM-9" target="PfpxP-m1vplkD573G0CM-5">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="280" y="100" />
+              <mxPoint x="55" y="100" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="PfpxP-m1vplkD573G0CM-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="PfpxP-m1vplkD573G0CM-9" target="PfpxP-m1vplkD573G0CM-11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="PfpxP-m1vplkD573G0CM-9" value="&lt;div&gt;OK/NOK&lt;/div&gt;&lt;div&gt;via email unic&lt;/div&gt;" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="240" y="10" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="PfpxP-m1vplkD573G0CM-11" value="&lt;div&gt;Creates entry in Db (Salt is the rando gen seq @RegTime - persisted in db)&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Creates Token with Claims&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Returns Extended User Object with Token attached&lt;/div&gt;" style="whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+          <mxGeometry x="440" y="20" width="150" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="PfpxP-m1vplkD573G0CM-14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="PfpxP-m1vplkD573G0CM-13" target="PfpxP-m1vplkD573G0CM-1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="290" y="310" />
+              <mxPoint x="50" y="310" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="PfpxP-m1vplkD573G0CM-15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="PfpxP-m1vplkD573G0CM-13" target="PfpxP-m1vplkD573G0CM-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="PfpxP-m1vplkD573G0CM-13" value="OK/NOK" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="250" y="210" width="80" height="80" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
