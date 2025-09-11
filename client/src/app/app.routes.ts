@@ -23,6 +23,7 @@ export const routes: Routes = [
     canActivate: [authGuard],
     children: [
       { path: 'home', component: Home},
+      { path: '', component: Home,pathMatch:'full'},
       { path: 'members', component: MemberList, pathMatch:'full'},
       { path: 'members/:id', 
           resolve:{memberF: memberResolver},
