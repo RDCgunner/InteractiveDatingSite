@@ -18,7 +18,7 @@ import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-register',
-  imports: [FormsModule, ReactiveFormsModule, JsonPipe, TextInput, NgClass],
+  imports: [FormsModule, ReactiveFormsModule, TextInput],
   templateUrl: './register.html',
   styleUrl: './register.css',
 })

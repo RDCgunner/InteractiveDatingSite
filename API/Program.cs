@@ -25,6 +25,7 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IPhotoService, PhotoService>();
 
 builder.Services.AddScoped<IMemberRepository, MemberRepository>();
+builder.Services.AddScoped < LogUserActivity>();
 
 builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudPhotoSettings"));
 //extracts from request the jwt token inside header and validates it

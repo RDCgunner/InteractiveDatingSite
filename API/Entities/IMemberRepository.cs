@@ -1,4 +1,5 @@
 using System;
+using API.Helpers;
 
 namespace API.Entities;
 
@@ -8,7 +9,8 @@ public interface IMemberRepository
 
     Task<bool> SaveAllAsync();
 
-    Task<IReadOnlyList<Member>> GetMembersAsync();
+    Task<PaginatedResult<Member>> GetMembersAsync(MemberParams memberParams);
+    
 
     Task<Member?> GetMemberByIdAsync(String id);
 

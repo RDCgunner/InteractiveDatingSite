@@ -1,10 +1,11 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { environment } from '../../environments/environment';
-import { EditableMember, Member, Photo } from '../../types/member';
+import { EditableMember, Member, MemberParams, Photo } from '../../types/member';
 import { AccountService } from './account-service';
 import { Token } from '@angular/compiler';
 import { tap } from 'rxjs';
+import { PaginatedResult } from '../../types/pagination';
 
 @Injectable({
   providedIn: 'root'
@@ -17,8 +18,24 @@ export class MemberService {
   public editMode=signal(false);
   public memberProfile = signal<Member | null>(null);
   
-  getMembers(){
-    return this.httpClient.get<Member[]>(this.baseUrl+'members');
+  getMembers(memberParams: MemberParams){
+    let paramsForHttpCall = new HttpParams();
+    paramsForHttpCall=paramsForHttpCall.append('pageNumber',memberParams.pageNumber);
+    paramsForHttpCall=paramsForHttpCall.append('pageSize',memberParams.pageSize);
+    paramsForHttpCall=paramsForHttpCall.append('minAge',memberParams.minAge);
+    paramsForHttpCall=paramsForHttpCall.append('maxAge',memberParams.maxAge);
+    paramsForHttpCall=paramsForHttpCall.append('orderBy',memberParams.orderBy);
+
+    if (memberParams.gender) {
+      paramsForHttpCall=paramsForHttpCall.append('gender',memberParams.gender);
+    }
+    
+    return this.httpClient.get<PaginatedResult<Member>>(this.baseUrl+'members',{params: paramsForHttpCall})
+      .pipe(
+        tap(()=>{
+          localStorage.setItem('filters',JSON.stringify(memberParams))
+        })
+      )
   }
   
   getMember(id: string){
