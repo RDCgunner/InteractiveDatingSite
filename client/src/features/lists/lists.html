@@ -1,3 +1,4 @@
+<div class="flex flex-row justify-between">
 <div class="tabs tabs-box tabs-lg text-primary w-fit">
     @for (tab of tabs; track $index) {
     <button role="tab" class="tab" [class.tab-active]="predicate===tab.value" (click)="setPredicate(tab.value)">
@@ -5,10 +6,18 @@
     </button>
     }
 </div>
+<div>
+    @if (paginatedMembers()?.metadata; as metadata)
+        {
+        <app-paginator [pageNumber]="metadata.currentPage" [totalCount]="metadata.totalCount"
+            [pageSize]="metadata.pageSize" [totalPages]="metadata.totalPages" (pageChange)="onPageChange($event)" />
+        }
+</div>
+</div>
 
-@if (members().length >0) {
+@if (paginatedMembers()?.items?.length) {
     <div class="grid grid-cols-5 gap-6 mt-5">
-        @for (member of members(); track member.id) {
+        @for (member of paginatedMembers()?.items; track member.id) {
             <app-member-card [member]="member"/>
         }
     </div>

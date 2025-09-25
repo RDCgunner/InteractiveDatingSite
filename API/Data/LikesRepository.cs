@@ -1,7 +1,9 @@
 using System;
 using System.Threading.Tasks;
 using API.Entities;
+using API.Helpers;
 using API.Interfaces;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Data;
@@ -47,6 +49,22 @@ public class LikesRepository(AppDbContext context) : ILikesRepository
             default: //mutual
                 var likedIds = await GetCurrentMemberLikeIds(memberId);
                 return await query.Where(x => x.TargetMemberId == memberId && likedIds.Contains(x.SourceMemberId)).Select(x => x.SourceMember).ToListAsync();  
+        }
+    }
+
+    public async Task<PaginatedResult<Member>> GetMemberLikes2(string predicate, string memberId, MemberParams memberParams)
+    {
+        var query = context.Likes.AsQueryable();
+        
+        switch (predicate)
+        {
+            case ("liked"):
+                return await PaginationHelper.CreatesAsync(query.Where(x => x.SourceMemberId == memberId).Select(x => x.TargetMember),memberParams.PageNumber, memberParams.PageSize);
+            case ("likedBy"):
+                return await PaginationHelper.CreatesAsync(query.Where(x => x.TargetMemberId == memberId).Select(x => x.SourceMember),memberParams.PageNumber, memberParams.PageSize);
+            default: //mutual
+                var likedIds = await GetCurrentMemberLikeIds(memberId);
+                return await PaginationHelper.CreatesAsync(query.Where(x => x.TargetMemberId == memberId && likedIds.Contains(x.SourceMemberId)).Select(x => x.SourceMember),memberParams.PageNumber, memberParams.PageSize);
         }
     }
 

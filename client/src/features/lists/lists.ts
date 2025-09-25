@@ -1,20 +1,27 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { LikesService } from '../../core/services/likes-service';
-import { Member } from '../../types/member';
+import { Member, MemberParams } from '../../types/member';
 import { MemberCard } from "../members/member-card/member-card";
+import { FilterModal } from '../members/filter-modal/filter-modal';
+import { PaginatedResult } from '../../types/pagination';
+import { Paginator } from "../../shared/paginator/paginator";
 
 @Component({
   selector: 'app-lists',
-  imports: [MemberCard],
+  imports: [MemberCard, Paginator],
   templateUrl: './lists.html',
   styleUrl: './lists.css'
 })
 export class Lists implements OnInit{
   
+@ViewChild('filterModal') modal!: FilterModal;
 
   private likesService = inject(LikesService);
-  protected members = signal<Member[]>([]);
   protected predicate = 'liked';
+  protected memberParams = new MemberParams();
+  protected paginatedMembers=signal<PaginatedResult<Member>| null> (null);
+  
+
 
   tabs = [
     {label:'Liked', value:'liked'},
@@ -33,9 +40,17 @@ export class Lists implements OnInit{
     }
   }
 
+onPageChange( event: {pageNumber:number, pageSize: number}){
+    this.memberParams.pageNumber=event.pageNumber;
+    this.memberParams.pageSize=event.pageSize;
+    this.loadLikes();
+
+  }
+
   loadLikes(){
-    this.likesService.getLikes(this.predicate).subscribe({
-      next: members => this.members.set(members)
+    this.likesService.getLikes(this.predicate, this.memberParams ).subscribe({
+      next:  member=> this.paginatedMembers.set(member)
+        
     })
   }
 }

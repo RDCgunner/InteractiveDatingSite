@@ -1,23 +1,38 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { environment } from '../../environments/environment';
-import { HttpClient } from '@angular/common/http';
-import { Member } from '../../types/member';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Member, MemberParams } from '../../types/member';
+import { PaginatedResult } from '../../types/pagination';
+import { tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
+
 export class LikesService {
+  
   
   private baseUrl = environment.apiUrl;
   private http = inject(HttpClient);
   likeIds = signal<string[]>([]);
 
+  
+
   toggleLike(targetMemberId:string ) {
     return this.http.post(`${this.baseUrl}likes/${targetMemberId}`,{});
   }
 
-  getLikes(predicate: string){
-    return this.http.get<Member[]>(this.baseUrl+'likes?predicate='+predicate);
+  getLikes(predicate: string, memberParams: MemberParams){
+    let paramsForHttpCall = new HttpParams();
+    paramsForHttpCall=paramsForHttpCall.append('pageNumber',memberParams.pageNumber);
+    paramsForHttpCall=paramsForHttpCall.append('pageSize',memberParams.pageSize);
+
+    return this.http.get<PaginatedResult<Member>>(this.baseUrl+'likes?predicate='+predicate,{params: paramsForHttpCall})
+      .pipe(
+              tap(()=>{
+                localStorage.setItem('filters',JSON.stringify(memberParams))
+              })
+    );
   }
 
   //for login
