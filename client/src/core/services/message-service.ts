@@ -22,4 +22,16 @@ export class MessageService {
     return this.httpClient.get<PaginatedResult<Message>>(this.baseUrl+'messages',{params});
   }
 
+  getMessageThread(memberId: string){
+    return this.httpClient.get<Message[]>(this.baseUrl+'messages/thread/'+memberId)
+  }
+
+  sendMessage(recipientId: string, content: string){
+    return this.httpClient.post<Message>(this.baseUrl+'messages',{recipientId,content})
+  }
+
+  deleteMessage(id: string){
+    return this.httpClient.delete(this.baseUrl+'messages/'+id);
+  }
+
 }

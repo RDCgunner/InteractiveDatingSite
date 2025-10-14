@@ -46,6 +46,23 @@ IMemberRepository memberRepository) : BaseApiController
         var currentMember = User.GetMemberId();
         var messages = await messageRepository.GetMessageThread(currentMember, recipientId);
         return Ok(messages);
-     }
+    }
 
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> DeleteMessage(string id)
+    {
+        var memberId = User.GetMemberId();
+        var message = await messageRepository.GetMessage(id);
+
+        if (message == null) return BadRequest("Cannot delete this message");
+        if (message.SenderId != memberId && message.RecipientId != memberId) return BadRequest("Message cannot be deleted by user");
+        if (message.SenderId == memberId) message.SenderDeleted = true;
+        else if (message.RecipientId == memberId) message.RecipientDeleted = true;
+
+
+        if (message is { SenderDeleted: true, RecipientDeleted: true }) messageRepository.DeleteMessage(message);
+
+        if (await messageRepository.SaveAllAsync()) return Ok();
+        else return BadRequest("Something went wrong deleting the message");
+    }
 }
