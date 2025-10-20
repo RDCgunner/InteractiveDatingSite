@@ -15,35 +15,64 @@ export class AccountService {
   currentUser = signal<User | null>(null);
 
   register(creds: RegisterCreds) {
-    return this.httpService.post<User>(this.baseUrl + 'account/register', creds).pipe(
+    return this.httpService.post<User>(this.baseUrl + 'account/register', creds, {withCredentials: true}).pipe(
       tap((user) => {
         if (user) {
           this.setUserCredentialsInLocalStorage(user);
+          this.startTokenRefreshInterval();
         }
       })
     );
   }
 
+
+  refreshToken(){
+    return this.httpService.post<User>(this.baseUrl+'account/refresh-token',{}, {withCredentials: true})
+  }
+
+
+  startTokenRefreshInterval(){
+    setInterval(()=>{
+      this.httpService.post<User>(this.baseUrl+'account/refresh-token',{}, {withCredentials: true}).subscribe({
+        next: user=> {
+          this.setUserCredentialsInLocalStorage(user);
+        },
+        error: () => {
+          this.logout();
+        }
+      })
+    }, 10*60*1000)
+  }
+
   login(creds: LoginCreds) {
-    return this.httpService.post<User>(this.baseUrl + 'account/login', creds).pipe(
+    return this.httpService.post<User>(this.baseUrl + 'account/login', creds,  {withCredentials: true}).pipe(
       tap((user) => {
         if (user) {
           this.setUserCredentialsInLocalStorage(user);
+          this.startTokenRefreshInterval();
         }
       })
     );
   }
 
   setUserCredentialsInLocalStorage(user: User) {
+    user.roles=this.getRolesFromToken(user);
     this.currentUser.set(user);
-    localStorage.setItem('user', JSON.stringify(user));
+    // localStorage.setItem('user', JSON.stringify(user));
     this.likesService.getLikeIds();
   }
 
   logout() {
     this.currentUser.set(null);
     localStorage.removeItem('filters');
-    localStorage.removeItem('user');
+    // localStorage.removeItem('user');
     this.likesService.clearLikeIds();
+  }
+
+  private getRolesFromToken(user: User) :string[]{
+    const payload = user.token.split('.')[1];
+    const decoded = atob(payload);
+    const jsonPayload =JSON.parse(decoded);
+    return Array.isArray(jsonPayload.role)? jsonPayload.role : [jsonPayload.role];
   }
 }

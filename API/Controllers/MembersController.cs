@@ -23,6 +23,7 @@ namespace API.Controllers
             //var members = await context.Users.ToListAsync();
             //return members;
             memberParams.CurrentMemberId = User.GetMemberId();
+            Console.WriteLine("Member Id " + memberParams.CurrentMemberId);
 
             return Ok(await memberRepository.GetMembersAsync(memberParams));
 
