@@ -5,6 +5,7 @@ using API.Entities;
 using API.Helpers;
 using API.Interfaces;
 using API.Services;
+using API.SignalR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -30,6 +31,8 @@ builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 builder.Services.AddScoped < LogUserActivity>();
 
 builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudPhotoSettings"));
+builder.Services.AddSignalR();
+builder.Services.AddSingleton<PresenceTracker>();
 
 builder.Services.AddIdentityCore<AppUser>(opt =>
 {
@@ -54,6 +57,20 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateAudience = false
         };
 
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                var accessToken = context.Request.Query["access_token"];
+                var path = context.HttpContext.Request.Path;
+                if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs"))
+                {
+                    context.Token = accessToken;
+                }
+                ;
+                return Task.CompletedTask;
+            }
+        };
     });
 builder.Services.AddAuthorizationBuilder()
 .AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"))
@@ -62,7 +79,7 @@ builder.Services.AddAuthorizationBuilder()
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Configure the HTTP request pipeline.-
 
 //app.UseAuthorization();
 app.UseCors(options =>
@@ -74,7 +91,8 @@ app.UseAuthentication(); //who
 app.UseAuthorization(); //R U Authorized ==needs to be after authentication
 
 app.MapControllers();
-
+app.MapHub<PresenceHub>("hubs/presence");
+app.MapHub<MessageHub>("hubs/messages");
 //Seed data
 using var scope = app.Services.CreateScope();
 var services = scope.ServiceProvider;
@@ -83,6 +101,7 @@ try
     var context = services.GetRequiredService<AppDbContext>();
     var userManager = services.GetRequiredService<UserManager<AppUser>>();
     await context.Database.MigrateAsync();
+    await context.Connections.ExecuteDeleteAsync();
     await Seed.SeedUsers(userManager);
 }
 catch (Exception Ex)
