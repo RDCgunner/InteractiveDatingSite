@@ -12,7 +12,6 @@ import {
 } from '@angular/forms';
 import { RegisterCreds, User } from '../../../types/user';
 import { AccountService } from '../../../core/services/account-service';
-import { JsonPipe, NgClass } from '@angular/common';
 import { TextInput } from '../../../shared/text-input/text-input';
 import { Router } from '@angular/router';
 
@@ -37,14 +36,14 @@ export class Register {
 
   constructor() {
     this.credentialsForm = this.formBuilder.group({
-      email: ['sam@test.com', [Validators.required, Validators.email]],
-      displayName: ['sam', [Validators.required]],
-      password: ['1111', [Validators.required, Validators.minLength(4), Validators.maxLength(8)]],
-      confirmPassword: ['1111', [Validators.required, this.matchValues('password')]],
+      email: ['', [Validators.required, Validators.email]],
+      displayName: ['', [Validators.required]],
+      password: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(8)]],
+      confirmPassword: ['', [Validators.required, this.matchValues('password')]],
     });
 
     this.profileForm = this.formBuilder.group({
-      gender: ['male', Validators.required],
+      gender: ['', Validators.required],
       dateOfBirth: ['', Validators.required],
       city: ['', Validators.required],
       country: ['', Validators.required],

@@ -23,7 +23,7 @@
         </form> -->
         @if (currentStep()===1) {
         <form [formGroup]="credentialsForm" class="flex flex-col gap-4 w-full steps">
-            <app-text-input class="m-2" label="Email" formControlName="email" />
+            <app-text-input label="Email" formControlName="email" />
             <app-text-input label="Display name" formControlName="displayName" />
             <app-text-input label="Password" formControlName="password" type="password" />
             <app-text-input label="Confirm password" formControlName="confirmPassword" type="password" />
