@@ -19,15 +19,16 @@ builder.Services.AddCors();
 builder.Services.AddControllers();
 builder.Services.AddDbContext<AppDbContext>(opt =>
 {
-    opt.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
+    opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IPhotoService, PhotoService>();
 
-builder.Services.AddScoped<IMemberRepository, MemberRepository>();
-builder.Services.AddScoped<ILikesRepository, LikesRepository>();
-builder.Services.AddScoped<IMessageRepository, MessageRepository>();
+// builder.Services.AddScoped<IMemberRepository, MemberRepository>();
+// builder.Services.AddScoped<ILikesRepository, LikesRepository>();
+// builder.Services.AddScoped<IMessageRepository, MessageRepository>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped < LogUserActivity>();
 
 builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudPhotoSettings"));
@@ -90,9 +91,13 @@ app.UseCors(options =>
 app.UseAuthentication(); //who
 app.UseAuthorization(); //R U Authorized ==needs to be after authentication
 
+
+app.UseDefaultFiles();
+app.UseStaticFiles();
 app.MapControllers();
 app.MapHub<PresenceHub>("hubs/presence");
 app.MapHub<MessageHub>("hubs/messages");
+app.MapFallbackToController("NameOfTheMethodInsideCtrl", "NameOfTheController");
 //Seed data
 using var scope = app.Services.CreateScope();
 var services = scope.ServiceProvider;

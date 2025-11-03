@@ -7,16 +7,18 @@ import { AccountService } from '../core/services/account-service';
 import { Home } from "../features/home/home";
 import { User } from '../types/user';
 import { NgClass } from '@angular/common';
+import { ConfirmDialog } from "../shared/confirm-dialog/confirm-dialog";
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app-root',
-  imports: [Nav, RouterOutlet,NgClass],
+  imports: [Nav, RouterOutlet, NgClass, ConfirmDialog],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
 export class App implements OnInit { 
 
-
+  
   private http = inject(HttpClient);
   protected title = signal('Dating app');
   protected accountService = inject(AccountService);
@@ -34,13 +36,14 @@ export class App implements OnInit {
   //   this.accountService.currentUser.set(user);
   // }
   
-  async getMembers(){ 
-    try {
-      return lastValueFrom(this.http.get<User[]>('https://localhost:5001/api/members'));
-    } catch (error) {
-      console.log(error);
-      throw error;
-    }
-  }
+  // async getMembers(){ 
+  //   try {
+  //     // return lastValueFrom(this.http.get<User[]>('https://localhost:5001/api/members'));
+  //     return lastValueFrom(this.http.get<User[]>(environment.apiUrl));
+  //   } catch (error) {
+  //     console.log(error);
+  //     throw error;
+  //   }
+  // }
 
 }

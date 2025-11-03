@@ -6,6 +6,7 @@ import { filter, first, firstValueFrom, Observable, single } from 'rxjs';
 import { AgePipe } from '../../../core/pipes/age-pipe';
 import { AccountService } from '../../../core/services/account-service';
 import { PresenceService } from '../../../core/services/presence-service';
+import { LikesService } from '../../../core/services/likes-service';
 
 @Component({
   selector: 'app-member-detailed',
@@ -20,15 +21,17 @@ export class MemberDetailed implements OnInit{
   private route = inject(ActivatedRoute);
   private accountService = inject(AccountService);
   private router=inject(Router);
-  protected presenceService = inject(PresenceService);
-
-
- 
+  protected presenceService = inject(PresenceService); 
   protected title = signal<string | undefined>('Profile');
-  protected isCurrentUser = (()=>{
-    return this.accountService.currentUser()?.id === this.route.snapshot.paramMap.get('id')
-  })
+  private rootId = signal<string|null>(null);
+  protected likeService = inject(LikesService);
 
+  protected isCurrentUser = (()=>{
+    return this.accountService.currentUser()?.id === this.rootId();
+  })
+constructor(){
+  this.route.paramMap.subscribe(params => this.rootId.set(params.get('id')));
+}
  ngOnInit()  {
 
     // this.route.data.subscribe(
@@ -52,4 +55,9 @@ export class MemberDetailed implements OnInit{
     if(!id) return;
     return this.memberService.getMember(id!);
   }
+
+    hasLiked = computed (()=> 
+    this.likeService.likeIds().includes(this.rootId()!)
+    );
+  
 }

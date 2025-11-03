@@ -20,6 +20,7 @@ protected accountService = inject(AccountService);
 protected toastService = inject(ToastService);
 protected memberService = inject(MemberService);
 protected busyService = inject(BusyService);
+protected loading = signal(false);
 
 protected router = inject(Router);
 protected creds : any = {};
@@ -44,9 +45,13 @@ handleSelectedTheme(theme: string){
   if (elem) elem.blur();
 }
 
-
+handleSelectUserItem(){
+  const elem = document.activeElement as HTMLDivElement;
+  if (elem) elem.blur();
+}
 
 login() {
+  this.loading.set(true);
     this.accountService.login(this.creds).subscribe(
       {next: results => {
         this.router.navigateByUrl('/members');
@@ -54,6 +59,7 @@ login() {
         //this.loggedIn.set(true);
         this.toastService.success("Login successfull!")
         this.creds={};
+        
 
       },
         error: error => {
@@ -61,7 +67,8 @@ login() {
           console.log(error);
           //alert(error.error);
           this.toastService.error(error.error);
-        }
+        },
+        complete: ()=> this.loading.set(false)
           
       }
     )

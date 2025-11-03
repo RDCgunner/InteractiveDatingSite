@@ -10,7 +10,7 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class LikesController(ILikesRepository likesRepository) : BaseApiController
+    public class LikesController(IUnitOfWork uow) : BaseApiController
     {
 
         [HttpPost("{targetMemberId}")]
@@ -18,18 +18,18 @@ namespace API.Controllers
         {
             var user = User.GetMemberId();
 
-            var like = await likesRepository.GetMemberLike(user, targetMemberId);
+            var like = await uow.LikesRepository.GetMemberLike(user, targetMemberId);
 
             if (user == targetMemberId) return BadRequest("You cannot like yourself");
-            if (like == null) likesRepository.AddLike(new MemberLike
+            if (like == null) uow.LikesRepository.AddLike(new MemberLike
             {
                 SourceMemberId = user,
                 TargetMemberId = targetMemberId
             });
 
-            else likesRepository.DeleteLike(like);
+            else uow.LikesRepository.DeleteLike(like);
 
-            if (await likesRepository.SaveAllChanges()) return Ok();
+            if (await uow.Complete()) return Ok();
 
             return BadRequest("Failed to update like");
 
@@ -38,13 +38,13 @@ namespace API.Controllers
         [HttpGet("list")]
         public async Task<ActionResult<IReadOnlyList<string>>> GetCurrentMemberLikeIds()
         {
-            return Ok(await likesRepository.GetCurrentMemberLikeIds(User.GetMemberId()));
+            return Ok(await uow.LikesRepository.GetCurrentMemberLikeIds(User.GetMemberId()));
         }
 
         [HttpGet]
         public async Task<ActionResult<PaginatedResult<Member>>> GetMemberLikes2(string predicate,[FromQuery] MemberParams memberParams)
         {
-            var members = await likesRepository.GetMemberLikes2(predicate, User.GetMemberId(),memberParams);
+            var members = await uow.LikesRepository.GetMemberLikes2(predicate, User.GetMemberId(),memberParams);
             return Ok(members);
 
         }

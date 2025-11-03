@@ -65,6 +65,7 @@ export class MemberMessages implements OnInit,OnDestroy{
     if (!recipientId) return;
     this.messageService.sendMessage(recipientId,this.messageContent)?.then(()=> {
       this.messageContent='';
+      this.scrollToBottom();
     })
   }
 
