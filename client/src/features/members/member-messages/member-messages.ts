@@ -1,4 +1,4 @@
-import { Component, effect, ElementRef, inject, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
+import { Component, effect, ElementRef, inject, model, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
 import { MessageService } from '../../../core/services/message-service';
 import { Message } from '../../../types/message';
 import { MemberService } from '../../../core/services/member-service';
@@ -21,7 +21,7 @@ export class MemberMessages implements OnInit,OnDestroy{
   private memberService = inject(MemberService);
   protected presenceService = inject(PresenceService);
   // protected messages = signal<Message[]>([]);
-  protected messageContent = '';
+  protected messageContent = model('');
   private route = inject(ActivatedRoute);
 
   
@@ -62,9 +62,9 @@ export class MemberMessages implements OnInit,OnDestroy{
 
   sendMessage(){
     const recipientId = this.memberService.memberProfile()?.id;
-    if (!recipientId) return;
-    this.messageService.sendMessage(recipientId,this.messageContent)?.then(()=> {
-      this.messageContent='';
+    if (!recipientId || !this.messageContent()) return;
+    this.messageService.sendMessage(recipientId,this.messageContent())?.then(()=> {
+      this.messageContent.set('');
       this.scrollToBottom();
     })
   }

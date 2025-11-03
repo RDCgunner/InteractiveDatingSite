@@ -24,9 +24,10 @@
         <li>
             <a routerLink="photos" routerLinkActive="text-primary">Photos</a>
         </li>
-        <li>
+        @if(!isCurrentUser()){<li>
             <a routerLink="messages" routerLinkActive="text-primary">Messages</a>
-        </li>
+        </li>}
+        
     </ul>
     <div class="card-actions justify-between gap-2 px-2 mb-3">
         <button routerLink="/members" class="btn btn-info flex-1">Go Back</button>
