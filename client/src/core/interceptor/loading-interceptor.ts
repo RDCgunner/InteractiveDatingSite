@@ -51,6 +51,14 @@ export const loadingInterceptor: HttpInterceptorFn = (req, next) => {
     cache.clear();
   }
 
+  if(req.method.includes('PUT')&& req.url.includes('approve-photo')){
+    cache.clear();
+  }
+
+  if(req.method.includes('PUT')&& req.url.includes('reject-photo')){
+    cache.clear();
+  }
+
   const busyService = inject(BusyService);
   busyService.busy();
 

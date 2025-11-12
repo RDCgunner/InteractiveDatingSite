@@ -1,5 +1,8 @@
+using System.Threading.Tasks;
+using API.Data;
 using API.DTO;
 using API.Entities;
+using API.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -10,7 +13,7 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AdminController(UserManager<AppUser> userManager) : BaseApiController
+    public class AdminController(UserManager<AppUser> userManager, IUnitOfWork uow, IPhotoService photoService) : BaseApiController
     {
         [HttpGet("users-with-roles")]
         [Authorize(Policy = "RequireAdminRole")]
@@ -36,7 +39,7 @@ namespace API.Controllers
                 Roles= roles.ToList()
                 }
                 );
-                Console.WriteLine("User:" + user.Email);
+                
             }
 
             var orderedList = userList.OrderByDescending(x => x.Email).Reverse();
@@ -44,12 +47,6 @@ namespace API.Controllers
         }
 
 
-        [HttpGet("photos-to-moderate")]
-        [Authorize(Policy = "ModeratePhotoRole")]
-        public ActionResult GetPhotosForModeration()
-        {
-            return Ok("Only moderators can moderate photos");
-        }
 
 
         [Authorize(Policy = "RequireAdminRole")]
@@ -69,6 +66,54 @@ namespace API.Controllers
             if (!result.Succeeded) return BadRequest("Could not remove  the roles to provided user");
 
             return Ok(await userManager.GetRolesAsync(user));
+        }
+
+        [HttpGet("photos-to-moderate")]
+        [Authorize(Policy = "ModeratePhotoRole")]
+        public async Task<ActionResult> GetPhotosForModeration()
+        {
+            var photos = await uow.MemberRepository.GetPhotosForMod();
+            if (photos == null) return Ok();
+            return Ok(photos);
+        }
+
+        [HttpPut("approve-photo/{photo_id}")]
+        [Authorize(Policy = "ModeratePhotoRole")]
+        public async Task<ActionResult> SetModerationApproved(int photo_id)
+        {
+            var approveAction = await uow.MemberRepository.ApprovePhoto(photo_id);
+
+            if (!approveAction) return BadRequest("Unable to approve photo");
+
+            if (await uow.Complete()) return Ok();
+
+            return BadRequest("EOF");
+                
+            
+        }
+
+        [HttpPut("reject-photo/{photo_id}")]
+        [Authorize(Policy = "ModeratePhotoRole")]
+        public async Task<ActionResult> SetModerationDenied(int photo_id)
+        {
+            var deleteAction = await uow.MemberRepository.DeletePhoto(photo_id);
+            switch (deleteAction)
+            {
+                case "0": return BadRequest("Photo id not found in datebase");
+
+                case "1": return Ok();
+
+                case "2": return BadRequest("Unspecified reason");
+                
+                default:
+                    {
+                        var result = await photoService.DeletePhotoAsync(deleteAction);
+                        if (result.Error != null) return BadRequest(result.Error.Message);
+                        if (await uow.Complete()) return Ok();
+                        return BadRequest("EOL");
+                    }
+            }
+           
         }
 
     }

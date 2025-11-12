@@ -2,6 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { User } from '../../types/user';
+import { Photo } from '../../types/member';
 
 @Injectable({
   providedIn: 'root'
@@ -19,4 +20,6 @@ export class AdminService {
     return this.http.post<string[]>(this.baseUrl+'admin/edit-roles/'+userId+'?roles='+roles,{})
   }
   
+   
+
 }

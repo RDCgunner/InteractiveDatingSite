@@ -41,7 +41,9 @@ namespace API.Controllers
         [HttpGet("{id}/photos")]
         public async Task<ActionResult<IReadOnlyList<Photo>>> getMembersPhoto(String id)
         {
-            return Ok(await uow.MemberRepository.GetPhotosForMemberAsync(id));
+            var memberId = User.GetMemberId();
+            if (id==memberId) return Ok(await uow.MemberRepository.GetPhotosForMyselfAsync(id));
+            else return Ok(await uow.MemberRepository.GetPhotosForMemberAsync(id));
         }
 
         [HttpPut]
@@ -82,14 +84,15 @@ namespace API.Controllers
             {
                 Url = result.SecureUrl.AbsoluteUri,
                 PublicId = result.PublicId,
-                MemberId = User.GetMemberId()
+                MemberId = User.GetMemberId(),
+                isApproved = false
             };
 
-            if (member.ImageUrl == null)
-            {
-                member.ImageUrl = photo.Url;
-                member.User.ImageUrl = photo.Url;
-            }
+            // if (member.ImageUrl == null)
+            // {
+            //     member.ImageUrl = photo.Url;
+            //     member.User.ImageUrl = photo.Url;
+            // }
 
             member.Photos.Add(photo);
 
@@ -108,6 +111,7 @@ namespace API.Controllers
 
             var photo = member.Photos.SingleOrDefault<Photo>(x => x.Id == photoId);
             if (photo == null) return BadRequest("Photo not found");
+            if (photo.isApproved == false) return BadRequest("Unapproved photos cannot be set as main");
             if (member.ImageUrl == photo.Url) return BadRequest("Image already is set as main Image");
 
             member.ImageUrl = photo.Url;
@@ -138,5 +142,7 @@ namespace API.Controllers
 
             return BadRequest("Cannot make changes in db");
         }
+
+       
     }
 };

@@ -18,7 +18,10 @@ public interface IMemberRepository
 
     Task<Member?> GetMemberForUpdate(string id);
 
+    Task<IReadOnlyList<Photo>> GetPhotosForMod();
 
+    Task<string> DeletePhoto(int photoId);
 
-
+    Task<bool> ApprovePhoto(int photoId);
+    Task<IReadOnlyList<Photo>>GetPhotosForMyselfAsync(string id);
 }

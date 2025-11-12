@@ -1,6 +1,8 @@
 using System;
 using API.Entities;
 using API.Helpers;
+using API.Interfaces;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -46,9 +48,21 @@ public class MemberRepository(AppDbContext context) : IMemberRepository
 
     public async Task<IReadOnlyList<Photo>> GetPhotosForMemberAsync(string memberId)
     {
+
         return await context.Members
         .Where(x => x.Id == memberId)
-        .SelectMany(x => x.Photos).ToListAsync();
+        .SelectMany(x => x.Photos)
+        .Where(x => x.isApproved == true)
+        .ToListAsync();
+    }
+    
+    public async Task<IReadOnlyList<Photo>> GetPhotosForMyselfAsync(string memberId)
+    {
+        
+        return await context.Members
+        .Where(x => x.Id == memberId)
+        .SelectMany(x => x.Photos)
+        .ToListAsync();
     }
 
     public async Task<bool> SaveAllAsync()
@@ -60,12 +74,57 @@ public class MemberRepository(AppDbContext context) : IMemberRepository
     {
         context.Entry(member).State = EntityState.Modified;
     }
-    
-        public async Task<Member?> GetMemberForUpdate(string id)
+
+    public async Task<Member?> GetMemberForUpdate(string id)
     {
         return await context.Members
                         .Include(x => x.User)
-                        .Include(x=>x.Photos)
+                        .Include(x => x.Photos)
                         .SingleOrDefaultAsync(x => x.Id == id);
     }
+
+    public async Task<IReadOnlyList<Photo>> GetPhotosForMod()
+    {
+        return await context.Photos.Where(x => x.isApproved == false).ToListAsync();
+    }
+
+
+    public async Task<string> DeletePhoto(int photo_id)
+    {
+        var photo = await context.Photos.SingleOrDefaultAsync<Photo>(x => x.Id == photo_id);
+        if (photo == null) return "0";
+        var publicId = photo.PublicId;
+        
+        if (await context.Photos.Where(x => x.Id == photo_id).ExecuteDeleteAsync() > 0) return publicId ?? "1";
+       
+
+
+        else return "2";
+
+    }
+    
+    public async Task<bool> ApprovePhoto(int photo_id)
+    {
+        var photo = await context.Photos.SingleOrDefaultAsync<Photo>(x => x.Id == photo_id);
+
+        if (photo == null) return false;
+
+        photo.isApproved = true;
+
+        var memberId = photo.MemberId;
+        var member = await context.Members.Include(x=>x.User).FirstOrDefaultAsync(x => x.Id == memberId);
+        if (member == null) return true;
+
+        if (member.ImageUrl ==null || member.ImageUrl=="")
+
+        {
+            member.ImageUrl = photo.Url;
+            member.User.ImageUrl= photo.Url;
+        }
+        
+        return true;
+
+    }
+
+
 }

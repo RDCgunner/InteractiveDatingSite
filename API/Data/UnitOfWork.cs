@@ -25,7 +25,7 @@ public class UnitOfWork (AppDbContext context): IUnitOfWork
         }
         catch (DbUpdateException ex)
         {
-            throw new Exception("An error occured while saving changes!");
+            throw new Exception("An error occured while saving changes! "+ ex);
         }
     }
 

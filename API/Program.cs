@@ -75,7 +75,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 builder.Services.AddAuthorizationBuilder()
 .AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"))
-.AddPolicy("ModeratePhotoRole", policy => policy.RequireRole("Moderator"));
+.AddPolicy("ModeratePhotoRole", policy => policy.RequireRole("Moderator","Admin"));
 
 
 var app = builder.Build();

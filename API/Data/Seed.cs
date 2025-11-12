@@ -54,13 +54,15 @@ public class Seed
                 }
 
             };
-
-            user.Member.Photos.Add(new Photo
+            if (member.ImageUrl != "" || member.ImageUrl != null)
             {
-                Url = member.ImageUrl!,
-                MemberId = member.Id
+                user.Member.Photos.Add(new Photo
+                {
+                    Url = member.ImageUrl!,
+                    MemberId = member.Id
 
-            });
+                });
+            }
 
             var result = await userManager.CreateAsync(user, "Pa$$w0rd");
             if (!result.Succeeded)

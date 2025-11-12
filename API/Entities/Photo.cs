@@ -10,6 +10,8 @@ public class Photo
     public required string Url { get; set; }//photo url
     public string? PublicId { get; set; } //
 
+    public bool isApproved { get; set; } = false;
+
     //Navigation Property
 
 
